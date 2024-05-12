@@ -1,57 +1,51 @@
 
-
-function isVideoFound() {
-
-  const video = document.querySelector("video");
-  if (video == null) {
-    // console.log("video not found")
-    // console.log(Date.now())
-    return false;
-  } else {
-    // console.log("video found")
-    return video;
-  }
-
+function setPlaybackRate(video, rate) {
+  video.playbackRate = rate;
 }
 function addScript(video) {
-
-  const control = document.querySelector(".ytp-right-controls");
+  
+  button1X.addEventListener("click", () => {
+    setPlaybackRate(video, 1);
+  })
 
   button2X.addEventListener("click", () => {
-    video.playbackRate = 2;
+    setPlaybackRate(video, 2);
   })
+  
+  
+  const control = document.querySelector(".ytp-right-controls");
   control.prepend(button2X);
-
-
-  button1X.addEventListener("click", () => {
-    video.playbackRate = 1;
-  })
   control.prepend(button1X);
 
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'a') {
-      video.playbackRate = 1;
-    } else if (e.key === 's') {
-      video.playbackRate = 2;
+    switch (e.key) {
+
+      case 'a':
+        setPlaybackRate(video, 1);
+        break;
+
+      case 's':
+        setPlaybackRate(video, 2);
+        break;
+
+      case 'z':
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+        break;
+      case ' ' || 'Spacebar' || '32':
+        e.preventDefault();
+        break;
     }
   })
 
+
 }
 
-const interval = 1000
-maxTiral = 10
-
-const findVideoInterval = setInterval(() => {
-  if (maxTiral === 0) {
-    clearInterval(findVideoInterval);
-  }
-  maxTiral--;
-  console.log(maxTiral)
-
-  const video = isVideoFound();
-  if (video) {
-    clearInterval(findVideoInterval);
-    addScript(video);
-  }
-}, interval);
+window.addEventListener('yt-navigate-finish', function() {
+  const video = document.querySelector("video");
+  addScript(video);
+});
